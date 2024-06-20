@@ -1,4 +1,5 @@
-Text-to-Image Generation with Stable Diffusion Models
+Textual Prompts to Image Conversion
+
 
 This repository explores the implementation of a text-to-image generative model using stable diffusion models, integrating advanced NLP and computer vision techniques. Stable diffusion models are particularly adept at generating high-quality images based on textual descriptions, offering a robust approach to image generation.
 
