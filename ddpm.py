@@ -1,9 +1,67 @@
 import torch
 import numpy as np
+import torch
 
+class VAE:
+    def __init__(self, encoder, decoder, latent_dim):
+        self.encoder = encoder
+        self.decoder = decoder
+        self.latent_dim = latent_dim
 
+    def encode(self, x):
+        """
+        Encode input data `x` into latent space.
+        """
+        return self.encoder(x)
+
+    def decode(self, z):
+        """
+        Decode latent vector `z` into data space.
+        """
+        return self.decoder(z)
+
+    def sample_latent(self, batch_size):
+        """
+        Sample latent vectors from a prior distribution.
+        """
+        return torch.randn(batch_size, self.latent_dim)
+
+    def generate(self, z):
+        """
+        Generate data samples from latent vector `z`.
+        """
+        return self.decode(z)
+
+    def reconstruct(self, x):
+        """
+        Reconstruct input data `x` by encoding and then decoding it.
+        """
+        z = self.encode(x)
+        return self.decode(z)
+
+    def train_step(self, x):
+        """
+        Perform a single training step using input `x`.
+        """
+        z_mean, z_log_var = self.encode(x)
+        z = self.reparameterize(z_mean, z_log_var)
+        x_recon = self.decode(z)
+        return x_recon
+
+    def reparameterize(self, mean, log_var):
+        """
+        Reparameterization trick for sampling from a Gaussian distribution.
+        """
+        std = torch.exp(0.5 * log_var)
+        eps = torch.randn_like(std)
+        return mean + eps * std
+#  Many generative models, especially those based on deep neural networks, are computationally expensive to train and require 
+# substantial resources (e.g., GPU hours).
+# Impact: This limits the accessibility of generative modeling to researchers and developers without access to high-performance computing resources.
+# i hence used ddpm 
 class DDPMSampler:
 
+  
     def __init__(self, generator: torch.Generator, num_training_steps=1000, beta_start: float = 0.00085,
                  beta_end: float = 0.0120):
         # Params "beta_start" and "beta_end" taken from: https://github.com/CompVis/stable-diffusion/blob/21f890f9da3cfbeaba8e2ac3c425ee9e998d5229/configs/stable-diffusion/v1-inference.yaml#L5C8-L5C8
